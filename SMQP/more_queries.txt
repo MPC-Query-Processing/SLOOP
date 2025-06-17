@@ -1,0 +1,64 @@
+Q4
+SELECT o_orderpriority, COUNT(*) AS order_count
+  FROM orders
+ WHERE o_orderdate >= '1993-01-07'
+   AND o_orderdate < '1993-04-07'
+   AND EXISTS (
+      SELECT *
+        FROM lineitem
+       WHERE l_orderkey = o_orderkey
+         AND l_commitdate < l_receiptdate
+     )
+GROUP BY o_orderpriority
+ORDER BY o_orderpriority;
+
+=========================
+Q11
+SELECT
+     ps_partkey,
+     SUM(ps_supplycost * ps_availqty) AS value
+FROM
+     partsupp,
+     supplier,
+     nation
+WHERE
+     ps_suppkey = s_suppkey
+     AND s_nationkey = n_nationkey
+     AND n_name = 'GERMANY'
+GROUP BY
+     ps_partkey
+
+=========================
+Full
+
+SELECT
+     count(*)
+FROM
+     lineitem, orders, customer, nation, region, part, supplier
+WHERE
+     l_orderkey = o_orderkey
+     AND o_custkey = c_custkey
+     AND c_nationkey = n_nationkey
+     AND n_regionkey = r_regionkey
+     AND s_suppkey = l_suppkey
+     AND p_partkey = l_partkey;
+
+
+SELECT count(*)
+FROM
+	customer, orders, lineitem, nation, region
+WHERE
+	c_custkey = o_custkey
+	AND l_orderkey = o_orderkey
+	AND c_nationkey = n_nationkey
+	AND r_regionkey = n_regionkey;
+
+SELECT count(*)
+FROM
+	customer, orders, lineitem, nation, region, part
+WHERE
+	c_custkey = o_custkey
+	AND l_orderkey = o_orderkey
+	AND c_nationkey = n_nationkey
+	AND r_regionkey = n_regionkey
+     AND p_partkey = l_partkey;
